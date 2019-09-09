@@ -153,7 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 mediaQuery.padding.top) *
             0.3,
         child: Chart(_recentTransactions),
-      ), txListWidget
+      ),
+      txListWidget
     ];
   }
 
@@ -203,27 +204,21 @@ class _MyHomePageState extends State<MyHomePage> {
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
     final pageBody = SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          //mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            if (isLandscape)
-              ..._buildLandscapeContent(
-                mediaQuery,
-                appBar,
-                txListWidget,
-              ),
-            if (!isLandscape)
-              ..._buildPortraitContent(
-                mediaQuery, 
-                appBar, 
-                txListWidget
-              ),
-          ],
-        )
-      )
-    );
+        child: SingleChildScrollView(
+            child: Column(
+      //mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        if (isLandscape)
+          ..._buildLandscapeContent(
+            mediaQuery,
+            appBar,
+            txListWidget,
+          ),
+        if (!isLandscape)
+          ..._buildPortraitContent(mediaQuery, appBar, txListWidget),
+      ],
+    )));
     return Platform.isIOS
         ? CupertinoPageScaffold(
             child: pageBody,
@@ -241,5 +236,5 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () => _startAtNewTransaction(context),
                   ),
           );
-  } 
+  }
 }

@@ -60,14 +60,14 @@ class _NewTransactionState extends State<NewTransaction> {
   Widget build(BuildContext context) {
     return Container(
       child: SingleChildScrollView(
-          child: Card(
+        child: Card(
           elevation: 5,
           child: Container(
             padding: EdgeInsets.only(
-              top: 10, 
-              left: 10, 
+              top: 10,
+              left: 10,
               right: 10,
-              bottom: MediaQuery.of(context).viewInsets.bottom+10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
