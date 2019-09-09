@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
               ),
           appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
-                  title: TextStyle(
+                    title: TextStyle(
                   fontFamily: 'OpenSans',
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -111,48 +110,82 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  List<Widget> _buildLandscapeContent(
-    MediaQueryData mediaQuery, 
-    AppBar appBar,
-    Widget txListWidget
-  ){
-    return [Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          'Show Chart',
-          style: Theme.of(context).textTheme.title,
-        ),
-        Switch.adaptive(
-          activeColor: Theme.of(context).accentColor,
-          value: _showChart,
-          onChanged: (val) {
-            setState(() {
-              _showChart = val;
-            });
-          },
-        )
-      ],
-    ),_showChart
-        ? Container(
-            height: (mediaQuery.size.height -appBar.preferredSize.height -mediaQuery.padding.top) * 0.7,
-            child: Chart(_recentTransactions),
+  List<Widget> _buildLandscapeContent(MediaQueryData mediaQuery,
+      PreferredSizeWidget appBar, Widget txListWidget) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Show Chart',
+            style: Theme.of(context).textTheme.title,
+          ),
+          Switch.adaptive(
+            activeColor: Theme.of(context).accentColor,
+            value: _showChart,
+            onChanged: (val) {
+              setState(() {
+                _showChart = val;
+              });
+            },
           )
-        : txListWidget];
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Chart(_recentTransactions),
+            )
+          : txListWidget
+    ];
   }
 
-  List<Widget> _buildPortraitContent(
-    MediaQueryData mediaQuery, 
-    AppBar appBar,
-    Widget txListWidget
-  ){
-    return [Container(
-      height: (mediaQuery.size.height -
-              appBar.preferredSize.height -
-              mediaQuery.padding.top) *
-          0.3,
-      child: Chart(_recentTransactions),
-    )];
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery,
+      PreferredSizeWidget appBar, Widget txListWidget) {
+    print("Portrait content");
+    return [
+      Container(
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.3,
+        child: Chart(_recentTransactions),
+      ), txListWidget
+    ];
+  }
+
+  Widget _buildCupertinoAppBar() {
+    return CupertinoNavigationBar(
+      middle: Text(
+        'Personal Expenses',
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          GestureDetector(
+            child: Icon(CupertinoIcons.add),
+            onTap: () => _startAtNewTransaction(context),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNormalAppBar() {
+    return AppBar(
+      title: Text(
+        'Personal Expenses',
+      ),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _startAtNewTransaction(context),
+        )
+      ],
+    );
   }
 
   @override
@@ -160,32 +193,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS ?
-      CupertinoNavigationBar(
-        middle: Text(
-          'Personal Expenses',
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            GestureDetector(
-              child: Icon(CupertinoIcons.add),
-              onTap: () => _startAtNewTransaction(context),
-            )
-          ],
-        ),
-      )
-      :AppBar(
-        title: Text(
-          'Personal Expenses',
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _startAtNewTransaction(context),
-          )
-        ],
-    );
+    final PreferredSizeWidget appBar =
+        Platform.isIOS ? _buildCupertinoAppBar() : _buildNormalAppBar();
     final txListWidget = Container(
       height: (MediaQuery.of(context).size.height -
               appBar.preferredSize.height -
@@ -193,32 +202,33 @@ class _MyHomePageState extends State<MyHomePage> {
           0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
-    final pageBody = SafeArea( 
+    final pageBody = SafeArea(
       child: SingleChildScrollView(
         child: Column(
-      //mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          if (isLandscape)
-            ..._buildLandscapeContent(
-              mediaQuery,
-              appBar,
-              txListWidget,
-            ),
-          if (!isLandscape)
-            ..._buildPortraitContent(
-              mediaQuery, 
-              appBar,
-              txListWidget
-            ),
-        ],
-      ))
+          //mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            if (isLandscape)
+              ..._buildLandscapeContent(
+                mediaQuery,
+                appBar,
+                txListWidget,
+              ),
+            if (!isLandscape)
+              ..._buildPortraitContent(
+                mediaQuery, 
+                appBar, 
+                txListWidget
+              ),
+          ],
+        )
+      )
     );
     return Platform.isIOS
         ? CupertinoPageScaffold(
-          child: pageBody,
-          navigationBar: appBar,
-        )
+            child: pageBody,
+            navigationBar: appBar,
+          )
         : Scaffold(
             appBar: appBar,
             body: pageBody,
@@ -231,5 +241,5 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () => _startAtNewTransaction(context),
                   ),
           );
-  }
+  } 
 }
