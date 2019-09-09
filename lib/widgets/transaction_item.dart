@@ -27,6 +27,7 @@ class _TransactionItemState extends State<TransactionItem> {
       Colors.red,
       Colors.black,
       Colors.blue,
+      Colors.purple,
     ];
 
     _bgColor = avaliableColors[Random().nextInt(4)];

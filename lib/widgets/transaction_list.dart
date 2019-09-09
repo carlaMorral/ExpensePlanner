@@ -22,7 +22,7 @@ class TransactionList extends StatelessWidget {
                   height: 10,
                 ),
                 Container(
-                  height: constraints.maxHeight*0.6,
+                  height: constraints.maxHeight * 0.6,
                   child: Image.asset(
                     'assets/images/waiting.png',
                     fit: BoxFit.cover,
@@ -33,12 +33,11 @@ class TransactionList extends StatelessWidget {
           })
         : ListView(
             children: transactions
-              .map((tx)=> TransactionItem(
-                key: ValueKey(tx.id),
-                transaction: tx, 
-                deleteTx: deleteTx
-            )).toList(),
-        );
+                .map((tx) => TransactionItem(
+                    key: ValueKey(tx.id), 
+                    transaction: tx, 
+                    deleteTx: deleteTx)
+                ).toList(),
+          );
   }
 }
-

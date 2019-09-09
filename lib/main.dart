@@ -145,7 +145,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Widget> _buildPortraitContent(MediaQueryData mediaQuery,
       PreferredSizeWidget appBar, Widget txListWidget) {
-    print("Portrait content");
     return [
       Container(
         height: (mediaQuery.size.height -
@@ -216,7 +215,11 @@ class _MyHomePageState extends State<MyHomePage> {
             txListWidget,
           ),
         if (!isLandscape)
-          ..._buildPortraitContent(mediaQuery, appBar, txListWidget),
+          ..._buildPortraitContent(
+            mediaQuery, 
+            appBar, 
+            txListWidget,
+          ),
       ],
     )));
     return Platform.isIOS
